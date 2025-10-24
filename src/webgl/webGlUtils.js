@@ -1,6 +1,7 @@
-import vertexShaderSource from './vertexShader.glsl?raw';
-import fragmentShaderSource from './fragmentShader.glsl?raw';
 import state from '../interactive/state';
+
+const vertexShaderSource = await fetch('./shaders/vertexShader.glsl').then(r => r.text());
+const fragmentShaderSource = await fetch('./shaders/fragmentShader.glsl').then(r => r.text());
 
 function createShader(gl, type, source){
     var shader = gl.createShader(type);

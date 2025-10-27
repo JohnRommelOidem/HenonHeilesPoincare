@@ -1,8 +1,9 @@
 import {stormerVerlet} from "./integrator"
 self.onmessage = function(e){
-    const chunkSize = 100000;
-    let {qp, dt, T, x} = e.data;
+    let {qp, dt, T} = e.data;
     let points = [];
+    const chunkSize = T/dt/5;
+    console.log(chunkSize)
     for (let t = 0; t<T; t+=dt){
         qp = stormerVerlet(qp, dt);
         points.push(qp[0][0], qp[0][1]);

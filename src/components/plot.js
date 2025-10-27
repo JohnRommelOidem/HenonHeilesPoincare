@@ -62,9 +62,9 @@ export default function renderPlot(){
     poincareAxes.append("g")
         .attr("class", "axis-y-sub axis")
         .call(axesParts.ySub)
+        .attr("transform", `translate(${innerWidth},0)`)
     poincareAxes.append("g")
         .attr("class", "axis-py-sub axis")
-        .attr("transform", `translate(${innerWidth},0)`)
         .call(axesParts.pySub)
 
     trajectoryAxes.append("g")

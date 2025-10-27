@@ -3,7 +3,7 @@ import {setQP, isPossible, xRangeYvalue} from "./integrator"
 import { pointer } from "d3";
 import state from "./state";
 
-const T = 10000
+const T = 100000
 const dt = 0.001
 export default function initClick(drawPoincare, updatePoints, finalizePoints, drawTrajectory, updateTrajectory, clearTrajectory){
     function initPoincareWorker(y, py){
@@ -39,7 +39,7 @@ export default function initClick(drawPoincare, updatePoints, finalizePoints, dr
         drawPoincare(state.transform)
         const qp = setQP(y, py, state);
         state.poincareWorker.postMessage({qp, dt, T, x:state.x})
-        state.trajectoryWorker.postMessage({qp, dt:dt*10, T:T/2, x:state.x})
+        state.trajectoryWorker.postMessage({qp, dt:dt*10, T:T/50, x:state.x})
     }
     state.poincareCanvas.on("click",function(e){
             const [x,y] = state.transform.invert(pointer(e, this));

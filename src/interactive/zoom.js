@@ -9,12 +9,12 @@ export default function initZoom(drawScene, drawTrajectory){
         .scaleExtent([1, 100])
         .translateExtent([[0, 0], [state.innerWidth, state.innerHeight]])
         .on("zoom", (e) => {
-            const newX = e.transform.rescaleX(state.scales.yScale);
-            const newY = e.transform.rescaleY(state.scales.pyScale);
-            poincareAxes.select(".axis-y").call(state.axesParts.y.scale(newX));
-            poincareAxes.select(".axis-py").call(state.axesParts.py.scale(newY));
-            poincareAxes.select(".axis-y-sub").call(state.axesParts.ySub.scale(newX));
-            poincareAxes.select(".axis-py-sub").call(state.axesParts.pySub.scale(newY));
+            const newX = e.transform.rescaleX(state.scales.pyScale);
+            const newY = e.transform.rescaleY(state.scales.yScale);
+            poincareAxes.select(".axis-y").call(state.axesParts.y.scale(newY));
+            poincareAxes.select(".axis-py").call(state.axesParts.py.scale(newX));
+            poincareAxes.select(".axis-y-sub").call(state.axesParts.ySub.scale(newY));
+            poincareAxes.select(".axis-py-sub").call(state.axesParts.pySub.scale(newX));
             state.transform = e.transform;
             drawScene(state.transform);
         });

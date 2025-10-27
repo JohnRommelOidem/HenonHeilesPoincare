@@ -9,14 +9,18 @@
   </head>
   <body>
     <script type="module" src="/src/main.js"></script>
-    <div id="poincare-container">
-      <canvas id="poincare-web-gl"></canvas>
-      <svg id="poincare-axes"></svg>
+    <div class="plots-row">
+      <div id="poincare-container" class="plot-container">
+        <canvas id="poincare-web-gl"></canvas>
+        <svg id="poincare-axes"></svg>
+      </div>
+      <div id="trajectory-container" class="plot-container">
+        <canvas id="trajectory-web-gl"></canvas>
+        <svg id="trajectory-axes"></svg>
+      </div>
     </div>
-    <div id="trajectory-container">
-      <canvas id="trajectory-web-gl"></canvas>
-      <svg id="trajectory-axes"></svg>
+    <div class="slider-row">
+      <div id="slider-container"></div>
     </div>
-    <div id="slider-container"></div>
   </body>
 </html>

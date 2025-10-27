@@ -49,6 +49,7 @@ body{
     width:min(45cqmax, 100cqmin);
     height:min(45cqmax, 100cqmin);
     background-color: hsl(0, 0%, 80%);
+    touch-action: none;
 }
 #poincare-axes{
     position:absolute;

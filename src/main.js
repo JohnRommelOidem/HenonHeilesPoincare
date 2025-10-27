@@ -1,13 +1,15 @@
 import renderPlot from "./components/plot"
-import initGl from "./webgl/webGlUtils"
+import { initPoincareGl, initTrajectoryGl} from "./webgl/webGlUtils"
 import initClick from "./interactive/click"
 import initZoom from "./interactive/zoom"
 import initSlider from "./components/slider"
 
 renderPlot();
 
-const {drawScene, updatePoints, finalizeTrajectory, clearPoints} = initGl()
+const {drawPoincare, updatePoints, finalizePoints, clearPoints} = initPoincareGl();
 
-const initPoincareWorker = initClick(drawScene, updatePoints, finalizeTrajectory)
-initZoom(drawScene)
-initSlider(renderPlot, initPoincareWorker, clearPoints)
+const {drawTrajectory, updateTrajectory, clearTrajectory} = initTrajectoryGl();
+
+const initWorker = initClick(drawPoincare, updatePoints, finalizePoints, drawTrajectory, updateTrajectory, clearTrajectory)
+initZoom(drawPoincare, drawTrajectory)
+initSlider(renderPlot, initWorker, clearPoints, clearTrajectory)

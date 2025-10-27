@@ -1,43 +1,57 @@
 
-import {setQP, isPossible} from "./integrator"
+import {setQP, isPossible, xRangeYvalue} from "./integrator"
 import { pointer } from "d3";
 import state from "./state";
 
-const T = 100000
+const T = 10000
 const dt = 0.001
-
-export default function initClick(drawScene, updatePoints, finalizeTrajectory){
+export default function initClick(drawPoincare, updatePoints, finalizePoints, drawTrajectory, updateTrajectory, clearTrajectory){
     function initPoincareWorker(y, py){
         if (state.poincareWorker != null){
             state.poincareWorker.terminate();
             state.poincareWorker = null;
         }
-        const worker = new Worker(
-            new URL("./worker.js", import.meta.url),
+        if (state.trajectoryWorker != null){
+            state.trajectoryWorker.terminate();
+            state.trajectoryWorker = null;
+        }
+        state.poincareWorker = new Worker(
+            new URL("./poincareWorker.js", import.meta.url),
             { type: "module" }
         );
-        worker.onmessage = function(e){
+        state.trajectoryWorker = new Worker(
+            new URL("./trajectoryWorker.js", import.meta.url),
+            { type: "module" }
+        );
+        state.poincareWorker.onmessage = function(e){
             if (e.data.done) return;
-            const [[x, y], [px, py]] = e.data;
-            updatePoints([state.xScale(y), state.yScale(py)]);
-            drawScene(state.transform)
+            const [y, py] = e.data;
+            updatePoints([py, y]);
+            drawPoincare(state.transform);
         }
-        updatePoints([state.xScale(y), state.yScale(py)]);
-        drawScene(state.transform)
+        state.trajectoryWorker.onmessage = function(e){
+            if (e.data.done) return;
+            const points = e.data;
+            drawTrajectory(state.trajTransform);
+            updateTrajectory(points);
+        }
+        updatePoints([py, y]);
+        drawPoincare(state.transform)
         const qp = setQP(y, py, state);
-        worker.postMessage({qp, dt, T, x:state.x})
-        state.poincareWorker = worker
+        state.poincareWorker.postMessage({qp, dt, T, x:state.x})
+        state.trajectoryWorker.postMessage({qp, dt:dt*10, T:T/2, x:state.x})
     }
-    state.canvas.on("click",function(e){
+    state.poincareCanvas.on("click",function(e){
             const [x,y] = state.transform.invert(pointer(e, this));
-            const pyi = state.yScale.invert(y);
-            const yi = state.xScale.invert(x);
+            const pyi = state.scales.pyScale.invert(x);
+            const yi = state.scales.yScale.invert(y);
             if (isPossible(state, yi, pyi)){
-                finalizeTrajectory();
+                finalizePoints();
+                clearTrajectory();
                 initPoincareWorker(yi, pyi);
             }
         }).on("dblclick", e=>e.preventDefault())
 
-    initPoincareWorker(0, 0);
+    initPoincareWorker(xRangeYvalue(state), 0);
     return initPoincareWorker;
 }
